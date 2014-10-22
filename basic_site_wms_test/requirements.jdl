@@ -1,0 +1,13 @@
+[
+Executable = "/bin/echo";
+Arguments = "Hello welcome to Dteam ";
+StdOutput = "hello.out";
+StdError = "hello.err";
+
+Requirements = 
+   other.GlueHostMainMemoryRAMSize >= 1500 &&
+   ( RegExp("lcgce1.shef.ac.uk",other.GlueCEUniqueID) );
+
+OutputSandbox = {"hello.out","hello.err"};
+JobType = "NORMAL";
+]
