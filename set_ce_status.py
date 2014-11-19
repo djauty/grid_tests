@@ -18,10 +18,11 @@
 import os
 import couchdb
 import getpass
+import optparse
 
 from GangaSNOplus.Lib.Applications import job_tools
 
-def set_ce_permissions(ce_list):
+def set_ce_permissions(ce_list, si=None):
 
     #access the server using the admin log in
     server = couchdb.Server("http://snoplus.cpp.ualberta.ca:5984")
@@ -48,13 +49,19 @@ def set_ce_permissions(ce_list):
 
         #if the CE given in the host key is not returned by the lcg-infosites command, but it is permitted, exclude CE. If permission status is false, do nothing. 
         if host not in ce_list and document['permit'] == True:
-            print "CE %s not found, excluding CE! " % host
-            document['permit'] = False
-            database[id] = document
+            if si is not None:
+                continue
+            else:
+                print "CE %s not found, excluding CE! " % host
+                document['permit'] = False
+                database[id] = document
 
         elif host not in ce_list and document['permit'] == False:
-            print "CE %s not found, CE not permitted! " % host 
-            continue
+            if si is not None:
+                continue
+            else:
+                print "CE %s not found, CE not permitted! " % host 
+                continue
  
         #go through all the CEs returned by lcg-infosites
         for sites in ce_list:
@@ -103,6 +110,12 @@ def set_ce_permissions(ce_list):
     print "All done!"
 
 if __name__ == '__main__':
+
+    parser = optparse.OptionParser()
+    parser.add_option("-s", dest="site", help="Set an exclude flag for one specific site", default=None)
+
+    (options, args) = parser.parse_args()
+
     ce_list = []
 
     #get all CEs from lcg-infosites and safe them in a list
@@ -113,7 +126,11 @@ if __name__ == '__main__':
             ce_name = bits[5]
             ce = ce_name.split(':',1)
             if ce[0] not in ce_list:
-                ce_list.append(ce[0])
+                if options.site is not None:
+                    if options.site in ce[0]:
+                        ce_list.append(ce[0])
+                else:
+                    ce_list.append(ce[0])
 
     #run the function that sets the permissions for each CE
-    set_ce_permissions(ce_list)
+    set_ce_permissions(ce_list,options.site)
