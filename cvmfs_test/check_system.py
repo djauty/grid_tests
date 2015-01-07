@@ -23,6 +23,10 @@ print "Check CVMFS/snoplus"
 print os.listdir("/cvmfs/snoplus.gridpp.ac.uk")
 print "VO_SNOPLUS_SNOLAB_CA_SW_DIR"
 print os.environ["VO_SNOPLUS_SNOLAB_CA_SW_DIR"]
+print "cvmfs/sl6"
+print os.listdir("/cvmfs/snoplus.gridpp.ac.uk/sl6")
+print os.listdir("/cvmfs/snoplus.gridpp.ac.uk/sl6/sw")
+print open("/cvmfs/snoplus.gridpp.ac.uk/sl6/sw/4.5.0/env_rat-4.5.0.sh", "r").readlines()
 
 # Now run RAT
 envfile1 = "/cvmfs/snoplus.gridpp.ac.uk/sl"+str(release)+"/env_cvmfs.sh"

@@ -2,7 +2,7 @@
 import lcgtools
 import cmdexec
 import os
-
+import optparse
 
 def list_ces():
     # Ignore queue names
@@ -41,7 +41,7 @@ def check_tags(ce_name):
     return tagged
 
 
-def submit_ratuser(ce_name):
+def submit_ratuser(ce_name, filename = None, output_dir = None):
     print 'Submit rat job to', ce_name
     j = Job()
     j.backend = LCG()
@@ -51,10 +51,14 @@ def submit_ratuser(ce_name):
     # j.application.softwareEnvironment = '/cvmfs/snoplus.gridpp.ac.uk/sl6/sw/4.6.0/env_rat-4.6.0.sh'
     j.application.ratBaseVersion = '5.0.1'
     j.application.ratMacro = '/cvmfs/snoplus.gridpp.ac.uk/sl6/sw/%s/rat-%s/mac/production/teloaded/2223keV_gamma.mac' % (j.application.ratBaseVersion, j.application.ratBaseVersion)
-    j.application.nEvents = 5
-    j.application.discardOutput = True
-    j.application.outputFile = 'temprat'
-    j.application.outputDir = 'user/none'
+    j.application.nEvents = 20
+    if output_dir is None or filename is None:
+        j.application.outputFile = 'temprat'
+        j.application.outputDir = 'user'
+        j.application.discardOutput = True
+    else:
+        j.application.outputFile = filename
+        j.application.outputDir = output_dir
     j.submit()
 
 
@@ -70,13 +74,16 @@ def submit_script(ce_name):
     j.submit()
 
 
-for ce_name in list_ces():
-#    print ce_name, check_tags(ce_name)
-#    if 'alberta' not in ce_name:
-#        continue
-#    if check_tags(ce_name) is False:
-#        submit_script(ce_name)
-#    else:
-#        submit_ratuser(ce_name)
-    submit_ratuser(ce_name)
+if __name__=="__main__":
+    parser = optparse.OptionParser()
+    parser.add_option("-s", dest="name_pattern", help="Check only sites with names containing this pattern")
+    (options, args) = parser.parse_args()
 
+    for ce_name in list_ces():
+        check_site = True
+        if options.name_pattern:
+            if options.name_pattern not in ce_name:
+                check_site = False
+        if check_site:
+            submit_ratuser(ce_name)
+            submit_script(ce_name)
