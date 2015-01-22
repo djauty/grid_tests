@@ -21,28 +21,45 @@ import getpass
 import optparse
 
 from GangaSNOplus.Lib.Applications import job_tools
+from GangaSNOplus.Lib.Utilities import RATUtil
 
 def set_ce_permissions(ce_list, si=None):
 
     #access the server using the admin log in
-    server = couchdb.Server("http://snoplus.cpp.ualberta.ca:5984")
+    url = ''
+    db_name = ''
+
+    try: 
+
+        #read the server url and database name from the config file
+        grid_config = RATUtil.GridConfig.get_instance()
+        info = grid_config.load_access()
+        server_info = info['url']
+        url = server_info[0] + '://' + server_info[1]
+        db_name = info['name']
+    
+    except:
+
+        #if fails, ask the user to provide server url and database name
+        print "Could not find .gangasnoplus config file! Please provide the database server url and the database name you want to access!"
+        url = raw_input("Url:")
+        db_name = raw_input("Database name:")
+
+    server = couchdb.Server(url)
     username = raw_input("Username for [%s]: " % server)
     password = getpass.getpass("Password for [%s]: " % server)
     server.resource.credentials = (username,password)
 
-    #find the test_grid database
-    database = server["test_grid"]
+    database = server[db_name]
 
     host_list = []
 
     #loop over all items in the database
-    for id in database:
+    for rows in database.view("_design/ganga/_view/ce_list", include_docs = True):
 
-        #access the document related to id
-        document = database[id]
-
-        if id=="_design/ganga":
-            continue
+        #access the documents
+        document = rows.doc
+        docid = rows.id
 
         #get the host key (i.e. the CE)
         host = str(document['host'])
@@ -54,7 +71,7 @@ def set_ce_permissions(ce_list, si=None):
             else:
                 print "CE %s not found, excluding CE! " % host
                 document['permit'] = False
-                database[id] = document
+                database[docid] = document
 
         elif host not in ce_list and document['permit'] == False:
             if si is not None:
@@ -74,14 +91,14 @@ def set_ce_permissions(ce_list, si=None):
                 if result == 'Y' or result == 'y':
                     print 'Excluding CE: ', host
                     document['permit'] = False
-                    database[id] = document
+                    database[docid] = document
 
                 #if no, check if the permission key is set to True or False. If it is True, do nothing, if it is set to False, change it to True
                 elif result == 'N' or result == 'n':
                     if document['permit'] == False:
                         print 'Permitting CE: ', host
                         document['permit'] = True
-                        database[id] = document
+                        database[docid] = document
                     else:
                         print 'No changes made for CE ', host 
                         continue
