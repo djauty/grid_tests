@@ -1,0 +1,14 @@
+# You might need to change the myproxy server (but 
+# probably not):
+MyProxyServer = "lcgrbp01.gridpp.rl.ac.uk";
+
+# If you want to force a particular Computing
+# Element, set it here:
+#Requirements = other.GlueCEInfoHostName == "t2ce06.physics.ox.ac.uk";
+
+# The following should be OK as is:
+Executable = "proxytest_gl.sh";
+StdOutput = "env.out";
+StdError = "env.err";
+InputSandbox = {"proxytest_gl.sh","burnP6"};
+OutputSandbox = {"env.out","env.err"};

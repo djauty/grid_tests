@@ -1,0 +1,13 @@
+# You might need to change the myproxy server (but 
+# probably not):
+MyProxyServer = "lcgrbp01.gridpp.rl.ac.uk";
+
+# If you want to force a particular Computing
+# Element, set it here:
+
+# The following should be OK as is:
+Executable = "proxytest_ic.sh";
+StdOutput = "env.out";
+StdError = "env.err";
+InputSandbox = {"proxytest_ic.sh","burnP6"};
+OutputSandbox = {"env.out","env.err"};
