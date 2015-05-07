@@ -3,6 +3,7 @@ import lcgtools
 import cmdexec
 import os
 import optparse
+import datetime
 
 def list_ces():
     # Ignore queue names
@@ -77,7 +78,8 @@ def submit_script(ce_name):
 if __name__=="__main__":
     parser = optparse.OptionParser()
     parser.add_option("-s", dest="name_pattern", help="Check only sites with names containing this pattern")
-    (options, args) = parser.parse_args()
+    parser.add_option("-f", dest="store_file", action="store_true", help="Stores output files (if possible!")
+    (options, args) = parser.parse_args()    
 
     for ce_name in list_ces():
         check_site = True
@@ -85,5 +87,10 @@ if __name__=="__main__":
             if options.name_pattern not in ce_name:
                 check_site = False
         if check_site:
-            submit_ratuser(ce_name)
+            output_file = None
+            output_dir = None
+            if options.store_file:
+                output_file = ce_name.replace(".", "_")
+                output_dir = "user/%s" % datetime.date.today().isoformat()
+            submit_ratuser(ce_name, output_file, output_dir)
             submit_script(ce_name)

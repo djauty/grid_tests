@@ -20,7 +20,14 @@ if not release:
 print "Check CVMFS"
 print os.system("rpm -q -a | grep cvmfs")
 print "Check CVMFS/snoplus"
-print os.listdir("/cvmfs/snoplus.gridpp.ac.uk")
+try:
+    print os.listdir("/cvmfs/snoplus.gridpp.ac.uk")
+except:
+    print "/cvmfs/snoplus.gridpp.ac.uk does not exist"
+try:
+    print os.listdir("/cvmfs/snoplus.egi.eu")
+except:
+    print "/cvmfs/snoplus.egi.eu does not exist"
 print "VO_SNOPLUS_SNOLAB_CA_SW_DIR"
 print os.environ["VO_SNOPLUS_SNOLAB_CA_SW_DIR"]
 print "cvmfs/sl6"
