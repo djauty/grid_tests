@@ -21,10 +21,6 @@ print "Check CVMFS"
 print os.system("rpm -q -a | grep cvmfs")
 print "Check CVMFS/snoplus"
 try:
-    print os.listdir("/cvmfs/snoplus.gridpp.ac.uk")
-except:
-    print "/cvmfs/snoplus.gridpp.ac.uk does not exist"
-try:
     print os.listdir("/cvmfs/snoplus.egi.eu")
 except:
     print "/cvmfs/snoplus.egi.eu does not exist"
