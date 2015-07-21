@@ -49,7 +49,7 @@ def submit_ratuser(ce_name, filename = None, output_dir = None):
     j.application = RATUser()
     # Next line only set if don't want to use default cvmfs setup
     # j.application.softwareEnvironment = '/cvmfs/snoplus.gridpp.ac.uk/sl6/sw/4.6.0/env_rat-4.6.0.sh'
-    j.application.ratBaseVersion = '5.0.1'
+    j.application.ratBaseVersion = '5.1.0'
     j.application.ratMacro = '/cvmfs/snoplus.gridpp.ac.uk/sl6/sw/%s/rat-%s/mac/production/teloaded/2223keV_gamma.mac' % (j.application.ratBaseVersion, j.application.ratBaseVersion)
     j.application.nEvents = 20
     if output_dir is None or filename is None:
