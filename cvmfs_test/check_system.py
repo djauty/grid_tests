@@ -20,17 +20,16 @@ if not release:
 print "Check CVMFS"
 print os.system("rpm -q -a | grep cvmfs")
 print "Check CVMFS/snoplus"
-print os.listdir("/cvmfs/snoplus.gridpp.ac.uk")
+try:
+    print os.listdir("/cvmfs/snoplus.egi.eu")
+except:
+    print "/cvmfs/snoplus.egi.eu does not exist"
 print "VO_SNOPLUS_SNOLAB_CA_SW_DIR"
 print os.environ["VO_SNOPLUS_SNOLAB_CA_SW_DIR"]
-print "cvmfs/sl6"
-print os.listdir("/cvmfs/snoplus.gridpp.ac.uk/sl6")
-print os.listdir("/cvmfs/snoplus.gridpp.ac.uk/sl6/sw")
-print open("/cvmfs/snoplus.gridpp.ac.uk/sl6/sw/4.5.0/env_rat-4.5.0.sh", "r").readlines()
 
 # Now run RAT
-envfile1 = "/cvmfs/snoplus.gridpp.ac.uk/sl"+str(release)+"/env_cvmfs.sh"
-envfile2 = "/cvmfs/snoplus.gridpp.ac.uk/sl"+str(release)+"/sw/4.6.0/env_rat-4.6.0.sh"
+envfile1 = "/cvmfs/snoplus.egi.eu/sl"+str(release)+"/env_cvmfs.sh"
+envfile2 = "/cvmfs/snoplus.egi.eu/sl"+str(release)+"/sw/4.6.0/env_rat-4.6.0.sh"
 
 script = "#!/bin/bash\n"
 script += "source " + envfile1 + "\n"
