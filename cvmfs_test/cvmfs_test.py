@@ -55,13 +55,13 @@ def submit_ratuser(ce_name, username, password, filename = None, output_dir = No
     j.application.rat_db_pswd = password
     j.application.ratVersion = '5.2.2'
     j.application.ratMacro = '/cvmfs/snoplus.egi.eu/sl6/sw/%s/rat-%s/mac/production/teloaded/2223keV_gamma.mac' % (j.application.ratVersion, j.application.ratVersion)
-    j.application.rat_args += [ '-N', 20]
+    j.application.rat_args += [ '-N', 20, '-o', filename]
     if output_dir is None or filename is None:
         j.application.outputFiles = 'temprat'
         j.application.outputDir = 'user'
         j.application.discardOutput = True
     else:
-        j.application.outputFiles = filename
+        j.application.outputFiles = "%s.root" % filename
         j.application.outputDir = output_dir
     j.submit()
 
