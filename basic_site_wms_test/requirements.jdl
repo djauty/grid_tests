@@ -3,7 +3,6 @@ Executable = "/bin/echo";
 Arguments = "Hello welcome to Dteam ";
 StdOutput = "hello.out";
 StdError = "hello.err";
-VirtualOrganisation = "snoplus.snolab.ca";
 
 Requirements = 
    other.GlueHostMainMemoryRAMSize >= 1500 &&
