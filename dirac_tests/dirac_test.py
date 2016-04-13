@@ -86,12 +86,12 @@ if __name__=="__main__":
     parser.add_argument("-c", dest = 'print_screen', help = "print list of computing sites \
                         to screen", default = False)
     args = parser.parse_args()
-    if args.print_screen:
-        print_sites()
     if args.ce_name is not 'default':
         if valid_site(args.ce_name) == True:
             submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
         else:
             print "\033[1;41m not a valid site name \033[0m"
+    elif args.print_screen:
+        print_sites()
     else:
         submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
