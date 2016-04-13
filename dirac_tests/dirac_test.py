@@ -18,6 +18,29 @@ except:
                        be 2.7+")
 
 
+def computing_sites():
+    sites = []
+    with open('sites.txt', 'r') as f:
+        data = f.readlines()
+        for line in data:
+            line = line.translate(None, '\n\t ')
+            sites.append(line)
+    return sites
+
+
+def print_sites():
+    sites = computing_sites()
+    for i in range (len(sites)):
+        print sites[i]
+    return
+
+def valid_site(ce_name):
+    sites = computing_sites()
+    for i in range (len(sites)):
+        if ce_name == sites[i]:
+            return True
+    return False
+
 def submit_script(path, mac, version, events, output_file, ce_name):
     j = Job()
     j.application = RATUser()
@@ -60,5 +83,15 @@ if __name__=="__main__":
                       [/cvmfs/snoplus.egi.eu/sl6/sw/%s/rat-%s/mac/production/teloaded/]", 
                       default = 'default')
     parser.add_argument("-s", dest = 'ce_name', help = "ce to run on", default = 'default')
+    parser.add_argument("-c", dest = 'print_screen', help = "print list of computing sites \
+                        to screen", default = False)
     args = parser.parse_args()
-    submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
+    if args.print_screen:
+        print_sites()
+    if args.ce_name is not 'default':
+        if valid_site(args.ce_name) == True:
+            submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
+        else:
+            print "\033[1;41m not a valid site name \033[0m"
+    else:
+        submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
