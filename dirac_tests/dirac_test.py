@@ -30,16 +30,18 @@ def computing_sites():
 
 def print_sites():
     sites = computing_sites()
-    for i in range (len(sites)):
+    for i in range(len(sites)):
         print sites[i]
     return
 
+
 def valid_site(ce_name):
     sites = computing_sites()
-    for i in range (len(sites)):
+    for i in range(len(sites)):
         if ce_name == sites[i]:
             return True
     return False
+
 
 def submit_script(path, mac, version, events, output_file, ce_name):
     j = Job()
@@ -57,7 +59,7 @@ def submit_script(path, mac, version, events, output_file, ce_name):
     print mac_file
     j.application.ratMacro = mac_file
     j.application.args = ['-N', events, '-o', output_file]
-    j.outputfiles += [GridFile(namePattern = output_file)]
+    j.outputfiles += [GridFile(namePattern=output_file)]
     if ce_name is "default":
         print '\033[1;42m this is being sent to a random backend \033[0m'
         j.backend = Dirac(settings={})
@@ -69,22 +71,23 @@ def submit_script(path, mac, version, events, output_file, ce_name):
     j.submit()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", dest = 'mac_file', help = "which .mac file to \
-                      use [2223keV.mac] check path", default = 'default')
-    parser.add_argument("-v", dest = 'version', help = "which ratBaseVersion to \
+    parser.add_argument("-m", dest='mac_file', help="which .mac file to \
+                      use [2223keV.mac] check path", default='default')
+    parser.add_argument("-v", dest='version', help="which ratBaseVersion to \
                       use [5.3.0]", default='5.3.0')
-    parser.add_argument("-N", dest = 'events', help = "number of events generated \
-                      [10]", default = 10)
-    parser.add_argument("-o", dest = 'output_file', help = "output file name \
-                      [output.ntuple.root]", default = 'output.ntuple.root')
-    parser.add_argument("-p", dest = 'path', help = "path to mac file \
-                      [/cvmfs/snoplus.egi.eu/sl6/sw/%s/rat-%s/mac/production/teloaded/]", 
-                      default = 'default')
-    parser.add_argument("-s", dest = 'ce_name', help = "ce to run on", default = 'default')
-    parser.add_argument("-c", dest = 'print_screen', help = "print list of computing sites \
-                        to screen", default = False)
+    parser.add_argument("-N", dest='events', help="number of events generated \
+                      [10]", default=10)
+    parser.add_argument("-o", dest='output_file', help="output file name \
+                      [output.ntuple.root]", default='output.ntuple.root')
+    parser.add_argument("-p", dest='path', help="path to mac file \
+                      [/cvmfs/snoplus.egi.eu/sl6/sw/%s/rat-%s/mac/production/teloaded/]",
+                        default='default')
+    parser.add_argument("-s", dest='ce_name', help="ce to run on", 
+                        default='default')
+    parser.add_argument("-c", dest='print_screen', help="print list of computing sites \
+                        to screen", default=False)
     args = parser.parse_args()
     if args.ce_name is not 'default':
         if valid_site(args.ce_name) == True:
