@@ -14,5 +14,10 @@ and source the data-flow env.sh file
 
 to run need to enter code
 
-  ganga dirac_test.py
+  ganga dirac_test.py -s "site_name"
 
+check possible sites to run over
+
+  ganga dirac_test.py -c 
+
+read code for other options
