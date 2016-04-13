@@ -18,7 +18,7 @@ except:
                        be 2.7+")
 
 
-def submit_script(path, mac, version, events, output_file):
+def submit_script(path, mac, version, events, output_file, ce_name):
     j = Job()
     j.application = RATUser()
     j.application.ratBaseVersion = version
@@ -35,7 +35,14 @@ def submit_script(path, mac, version, events, output_file):
     j.application.ratMacro = mac_file
     j.application.args = ['-N', events, '-o', output_file]
     j.outputfiles += [GridFile(namePattern = output_file)]
-    j.backend = Dirac(settings={})
+    if ce_name is "default":
+        print '\033[1;42m this is being sent to a random backend \033[0m'
+        j.backend = Dirac(settings={})
+    else:
+        message = "this is being sent to %s" % (ce_name)
+        print '\033[1;42m' + message + '\033[0m'
+        j.backend = Dirac()
+        j.backend.settings['Destination'] = ce_name
     j.submit()
 
 
@@ -52,6 +59,6 @@ if __name__=="__main__":
     parser.add_argument("-p", dest = 'path', help = "path to mac file \
                       [/cvmfs/snoplus.egi.eu/sl6/sw/%s/rat-%s/mac/production/teloaded/]", 
                       default = 'default')
+    parser.add_argument("-s", dest = 'ce_name', help = "ce to run on", default = 'default')
     args = parser.parse_args()
-    submit_script(args.path, args.mac_file, args.version, args.events, args.output_file)
-
+    submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
