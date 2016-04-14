@@ -35,15 +35,15 @@ def print_sites():
     return
 
 
-def valid_site(ce_name):
+def valid_site(site_name):
     sites = computing_sites()
     for i in range(len(sites)):
-        if ce_name == sites[i]:
+        if site_name == sites[i]:
             return True
     return False
 
 
-def submit_script(path, mac, version, events, output_file, ce_name):
+def submit_script(path, mac, version, events, output_file, site_name):
     j = Job()
     j.application = RATUser()
     j.application.ratBaseVersion = version
@@ -60,14 +60,14 @@ def submit_script(path, mac, version, events, output_file, ce_name):
     j.application.ratMacro = mac_file
     j.application.args = ['-N', events, '-o', output_file]
     j.outputfiles += [GridFile(namePattern=output_file)]
-    if ce_name is "default":
+    if site_name is "default":
         print '\033[1;42m this is being sent to a random backend \033[0m'
         j.backend = Dirac(settings={})
     else:
-        message = "this is being sent to %s" % (ce_name)
+        message = "this is being sent to %s" % (site_name)
         print '\033[1;42m' + message + '\033[0m'
         j.backend = Dirac()
-        j.backend.settings['Destination'] = ce_name
+        j.backend.settings['Destination'] = site_name
     j.submit()
 
 
@@ -84,17 +84,23 @@ if __name__ == "__main__":
     parser.add_argument("-p", dest='path', help="path to mac file \
                       [/cvmfs/snoplus.egi.eu/sl6/sw/%s/rat-%s/mac/production/teloaded/]",
                         default='default')
-    parser.add_argument("-s", dest='ce_name', help="ce to run on", 
+    parser.add_argument("-s", dest='site_name', help="site to run at checking list", 
                         default='default')
     parser.add_argument("-c", dest='print_screen', help="print list of computing sites \
                         to screen", default=False)
     args = parser.parse_args()
-    if args.ce_name is not 'default':
-        if valid_site(args.ce_name) == True:
-            submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
+    if args.site_name is not 'default':
+        if valid_site(args.site_name) == True:
+            print "\033[1;42m is a valid site \033[0m"
+            submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.site_name)
         else:
-            print "\033[1;41m not a valid site name \033[0m"
+            print "\033[1;41m not a known snoplus site name \033[0m"
+            non_standard = raw_input("\033[1;42m do you want to test anyway [yes]? \033[0m")
+            if non_standard is 'yes':
+                print "\033[1;42m submitting to site \033[0m"
+                submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.site_name)
+            else:print "\033[1;41m Not submitting \033[0m"
     elif args.print_screen:
         print_sites()
     else:
-        submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.ce_name)
+        submit_script(args.path, args.mac_file, args.version, args.events, args.output_file, args.site_name)
